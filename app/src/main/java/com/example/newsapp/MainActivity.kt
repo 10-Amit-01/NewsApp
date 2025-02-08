@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.homeNavbar)
-
+        openHomeFragment()
         bottomNavigationView.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.home -> {
