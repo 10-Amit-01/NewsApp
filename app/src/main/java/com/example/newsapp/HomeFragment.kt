@@ -5,46 +5,51 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newsapp.Model.Newsitem
+import com.example.newsapp.Model.Article
+import com.example.newsapp.Model.NewsResponse
+import com.example.newsapp.retrofitapi.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var adapter: HomeAdapter
+    private var data = mutableListOf<Article>()
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val data = ArrayList<Newsitem>()
-        data.add(Newsitem("Sports News","This is sports news", R.drawable.ic_home))
-        data.add(Newsitem("Tech News","This is Tech news", R.drawable.ic_launcher_background))
-        data.add(Newsitem("Politis News","This is political news", R.drawable.ic_bookmark))
-
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.homeRecyclerView)
+
+        recyclerView = view.findViewById(R.id.homeRecyclerView)
+        adapter = HomeAdapter(data,view.context)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = HomeAdapter(data)
+        recyclerView.adapter = adapter
+
+        fetchData("top-headline")
+
         return view
     }
+
+    private fun fetchData(query : String) {
+        RetrofitClient.instance.searchNews(query).enqueue(object : Callback<NewsResponse>{
+            override fun onResponse(call: Call<NewsResponse>, response: Response<NewsResponse>) {
+                if(response.isSuccessful && response.body() != null){
+                    data.clear()
+                    data.addAll(response.body()!!.articles)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+
+            override fun onFailure(call: Call<NewsResponse>, t: Throwable) {
+                Toast.makeText(context,"Some thing went Wrong", Toast.LENGTH_SHORT).show()
+            }
+
+            })
+        }
 }

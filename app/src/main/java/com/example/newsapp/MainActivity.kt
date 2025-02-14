@@ -3,6 +3,7 @@ package com.example.newsapp
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -10,21 +11,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.homeNavbar)
-        openHomeFragment()
+        openFragment(HomeFragment())
         bottomNavigationView.setOnItemSelectedListener { item ->
+            val currentFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
             when(item.itemId) {
                 R.id.home -> {
-                    openHomeFragment()
+                    if(currentFragment !is HomeFragment){
+                        openFragment(HomeFragment())
+                    }
                 }
                 R.id.bookmark -> {
-                    Toast.makeText(this, "Bookmark", Toast.LENGTH_SHORT).show()
+                    if(currentFragment !is BookmarkFragment){
+                        openFragment(BookmarkFragment())
+                    }
                 }
             }
             true
         }
     }
 
-    private fun openHomeFragment() {
-        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, HomeFragment()).commit()
+    private fun openFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit()
     }
 }
