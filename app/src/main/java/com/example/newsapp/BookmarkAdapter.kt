@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.newsapp.Model.Article
 import com.example.newsapp.bookmarkutil.BookmarkManger
 
-class BookmarkAdapter(val data : List<Article>) : Adapter<BookmarkAdapter.viewHolder>(){
+class BookmarkAdapter(val data : MutableList<Article>, private val onRemoveBookmark: (Article) -> Unit) : Adapter<BookmarkAdapter.viewHolder>(){
     class viewHolder(view : View) : ViewHolder(view){
         val imageView = view.findViewById<ImageView>(R.id.imgBookmark)
         val title = view.findViewById<TextView>(R.id.txtBookmarkTitle)
@@ -36,8 +36,8 @@ class BookmarkAdapter(val data : List<Article>) : Adapter<BookmarkAdapter.viewHo
             .into(holder.imageView)
 
         holder.bookmarkButton.setOnClickListener{
+            onRemoveBookmark(curr)
             BookmarkManger(holder.itemView.context).removeBookmark(curr)
-            notifyDataSetChanged()
         }
     }
 }
