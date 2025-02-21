@@ -3,6 +3,7 @@ package com.example.newsapp
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -23,7 +24,9 @@ class Headline : AppCompatActivity() {
         if (url != null) {
             webView.loadUrl(url)
         }
-        webView.settings.javaScriptEnabled = true
+        else{
+            Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show()
+        }
 
     }
 }
