@@ -2,13 +2,13 @@ package com.example.newsapp
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
@@ -46,9 +46,9 @@ class HomeAdapter(val data: List<Article>, val context: Context) :
             .into(holder.newsImage)
 
         holder.newsTitle.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(curr.url))
-            holder.itemView.context.startActivity(intent)
-
+            val intent = Intent(context,Headline::class.java)
+            intent.putExtra("url",curr.url)
+            startActivity(context,intent,null)
         }
 
         if(BookmarkManger(context).getBookmarks().contains(curr)){
@@ -56,7 +56,6 @@ class HomeAdapter(val data: List<Article>, val context: Context) :
         }
         else{
             holder.bookmark.setImageResource(R.drawable.baseline_bookmark_border_24)
-
         }
 
         holder.bookmark.setOnClickListener{
